@@ -4,25 +4,12 @@ This repository contains scripts for preparing an Nginx host and backing up the
 local x-ui database. The installation script does **not** install the Xray core
 or configure an XHTTP inbound; those steps must be completed separately.
 
-The script installs Nginx, Certbot, its Nginx plugin, Git, and wget. It removes
-the default Nginx index page and places the tracked files from the
-[restaurant website repository](https://github.com/YaninaTrekhleb/restaurant-website)
-directly in `/var/www/html` (without copying its `.git` metadata). It stops if
-that directory already contains other files, so review or back them up before
-running the installer.
-
-Once DNS and the selected Nginx site are ready, request a certificate for your
-own domain (replace the example domain):
-
-```bash
-sudo certbot --nginx -d example.com
-```
-
-It also downloads `default_https_site_only` and `default_https` into
-`/etc/nginx/sites-available`. The script does **not** enable either site or
-restart Nginx. Review both files and select only the configuration appropriate
-for your server. After enabling your chosen configuration, validate and reload
-Nginx:
+[initial-install.sh] installs Nginx, Certbot, and its Nginx plugin. It copies your local
+`index.html` to `/var/www/html/index.html`, replacing Nginx's default index
+page, and copies your local `https_xhttp` and `https_site_only` files into
+`/etc/nginx/sites-available` with the same names. It stops before installing
+packages if any of the three local files is missing. Neither config is enabled
+automatically.
 
 ## Local database backup
 
