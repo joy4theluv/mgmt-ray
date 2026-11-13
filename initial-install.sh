@@ -9,7 +9,7 @@ fi
 SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 LOCAL_INDEX="$SCRIPT_DIR/index.html"
 LOCAL_SITE_ONLY="$SCRIPT_DIR/https_site_only"
-LOCAL_XHTTP="$SCRIPT_DIR/https_xhttp"
+LOCAL_XHTTP="$SCRIPT_DIR/https_websocket"
 
 for source_file in "$LOCAL_INDEX" "$LOCAL_SITE_ONLY" "$LOCAL_XHTTP"; do
     if [[ ! -f "$source_file" ]]; then
@@ -35,5 +35,5 @@ fi
 
 install -m 644 "$LOCAL_INDEX" "$WEB_ROOT/index.html"
 rm -f "$WEB_ROOT/index.nginx-debian.html"
-install -m 644 "$LOCAL_XHTTP" "$NGINX_SITES/https_xhttp"
+install -m 644 "$LOCAL_XHTTP" "$NGINX_SITES/https_websocket"
 install -m 644 "$LOCAL_SITE_ONLY" "$NGINX_SITES/https_site_only"
