@@ -1,4 +1,4 @@
-# XHTTP Server Setup and Backups
+# Websocket Server Setup and Backups
 
 This repository contains scripts for preparing an Nginx host and backing up the
 local x-ui database. The installation script does **not** install the Xray core
@@ -6,7 +6,7 @@ or configure an XHTTP inbound; those steps must be completed separately.
 
 [initial-install.sh](./initial-install.sh) installs Nginx, Certbot, and its Nginx plugin. It copies your local
 `index.html` to `/var/www/html/index.html`, replacing Nginx's default index
-page, and copies your local `https-xhttp` and `https-site-only` files into
+page, and copies your local `https-websocket` and `https-site-only` files into
 `/etc/nginx/sites-available` with the same names. It stops before installing
 packages if any of the three local files is missing. Neither config is enabled
 automatically.
