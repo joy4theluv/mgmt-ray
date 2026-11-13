@@ -4,7 +4,7 @@ This repository contains scripts for preparing an Nginx host and backing up the
 local x-ui database. The installation script does **not** install the Xray core
 or configure an XHTTP inbound; those steps must be completed separately.
 
-[initial-install.sh] installs Nginx, Certbot, and its Nginx plugin. It copies your local
+[initial-install.sh](./initial-install.sh) installs Nginx, Certbot, and its Nginx plugin. It copies your local
 `index.html` to `/var/www/html/index.html`, replacing Nginx's default index
 page, and copies your local `https_xhttp` and `https_site_only` files into
 `/etc/nginx/sites-available` with the same names. It stops before installing
