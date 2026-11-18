@@ -6,22 +6,46 @@ if [[ "$EUID" -ne 0 ]]; then
     exit 1
 fi
 
+echo "==> Starting initial installation of Nginx and Certbot..."
 SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 LOCAL_INDEX="$SCRIPT_DIR/index.html"
-LOCAL_SITE_ONLY="$SCRIPT_DIR/https_site_only"
-LOCAL_XHTTP="$SCRIPT_DIR/https_websocket"
+LOCAL_SITE_ONLY="$SCRIPT_DIR/https-site-only"
+LOCAL_WS="$SCRIPT_DIR/https-websocket"
 
-for source_file in "$LOCAL_INDEX" "$LOCAL_SITE_ONLY" "$LOCAL_XHTTP"; do
+echo "==> Checking for required files..."
+for source_file in "$LOCAL_INDEX" "$LOCAL_SITE_ONLY" "$LOCAL_WS"; do
     if [[ ! -f "$source_file" ]]; then
         echo "ERROR: Required file not found: $source_file" >&2
         exit 1
     fi
 done
 
-apt-get update -y
+apt-get update -y 
 
-apt-get install -y nginx certbot python3-certbot-nginx
+echo "Choose packages to install:"
+echo "  1) Nginx only"
+echo "  2) Nginx and Certbot"
+if ! read -r -p "Enter choice [1-2]: " package_choice; then
+    echo "ERROR: Could not read package selection." >&2
+    exit 1
+fi
 
+case "$package_choice" in
+    1)
+        echo "==> Installing Nginx..."
+        apt-get install -y nginx
+        ;;
+    2)
+        echo "==> Installing Nginx and Certbot..."
+        apt-get install -y nginx certbot python3-certbot-nginx
+        ;;
+    *)
+        echo "ERROR: Invalid selection. Choose 1 or 2." >&2
+        exit 1
+        ;;
+esac
+
+echo "==> Checking required Nginx directories..."
 WEB_ROOT="/var/www/html"
 NGINX_SITES="/etc/nginx/sites-available"
 if [[ ! -d "$WEB_ROOT" ]]; then
@@ -33,7 +57,12 @@ if [[ ! -d "$NGINX_SITES" ]]; then
     exit 1
 fi
 
+echo "==> Installing index.html to /var/www/html/..."
 install -m 644 "$LOCAL_INDEX" "$WEB_ROOT/index.html"
+
+echo "==> Removing default Nginx index file..."
 rm -f "$WEB_ROOT/index.nginx-debian.html"
-install -m 644 "$LOCAL_XHTTP" "$NGINX_SITES/https_websocket"
-install -m 644 "$LOCAL_SITE_ONLY" "$NGINX_SITES/https_site_only"
+
+echo "==> Installing Nginx site configuration files..."
+install -m 644 "$LOCAL_WS" "$NGINX_SITES/https-websocket"
+install -m 644 "$LOCAL_SITE_ONLY" "$NGINX_SITES/https-site-only"
